@@ -1,11 +1,9 @@
 /*
-First time? Check out the tutorial game:
-https://sprig.hackclub.com/gallery/getting_started
-
 @title: Lava Explorers
 @author: Cameron G
 @tags: [Adventure, Puzzle, Casual]
-@addedOn: 2024-00-00
+Last updated: 7-22-2024
+Time Spent: 1.25 hours
 */
 
 const player = "p"
@@ -14,6 +12,7 @@ const wall = "w"
 const goal = "g"
 var lose = false;
 var score = 0;
+var levelScore = 0
 
 
 setLegend(
@@ -96,6 +95,18 @@ pwlw.
 ..w..
 .....
 .....
+....g`,
+  map`
+p..lg
+...l.
+.l.l.
+.l...
+gl...`,
+  map`
+p...g
+....g
+....g
+....g
 ....g`
 ]
 
@@ -119,29 +130,38 @@ onInput("a", () => {
 });
 
 afterInput(() => {
-  const tilesWithLava = tilesWith(player, lava).length;
+  let tilesWithLava = tilesWith(player, lava).length;
 
-  const tilesWithGoal = tilesWith(player, goal).length;
+  let tilesWithGoal = tilesWith(player, goal).length;
 
-  const totalGoals = tilesWith(player, goal).length;
+  let totalGoals = tilesWith(goal).length;
 
-  let goals = new Array(getAll(goal, map`
-pwlw.
-..w..
-.....
-.....
-....g`));
+  let goals = (getAll(goal, levels[level]));
+  var i = 0
   for (let goalObject of goals) {
-    if (tilesWith(player, goal) > 0 && goalObject.y == getFirst(player).y && goalObject.x == getFirst(player).x) {
+    if (goalObject.y == getFirst(player).y && goalObject.x == getFirst(player).x) {
       console.log("removing object")
+      goals.splice[i, i++]
       goalObject.remove()
       score++
+      levelScore++
+      i++
+    }
+    if(levelScore == totalGoals)
+    {
+      levelScore = 0;
+      level++
+      if(level != undefined)
+      {
+        setMap(levels[level])
+      }
+      else
+      {
+        console.log("You win!")
+      }
     }
   }
   if (tilesWithLava >= 1) {
     lose = true;
-  }
-  if (tilesWithGoal > 0) {
-
   }
 })
